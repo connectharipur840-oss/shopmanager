@@ -1,0 +1,35 @@
+name: Build APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Arrange files
+        run: |
+          mvf() { if [ -f "$1" ]; then mkdir -p "$(dirname "$2")"; mv -f "$1" "$2"; fi; }
+          mvf app-build.gradle app/build.gradle
+          mvf AndroidManifest.xml app/src/main/AndroidManifest.xml
+          mvf MainActivity.java app/src/main/java/com/shopmanager/app/MainActivity.java
+          mvf index.html app/src/main/assets/index.html
+          mvf strings.xml app/src/main/res/values/strings.xml
+          mvf colors.xml app/src/main/res/values/colors.xml
+          mvf styles.xml app/src/main/res/values/styles.xml
+          mvf ic_launcher.xml app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          mvf ic_fg.xml app/src/main/res/drawable/ic_fg.xml
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ShopManager-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
