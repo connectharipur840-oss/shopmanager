@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5a40"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Shop Manager – شاپ مینیجر</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f1e4;--card:#fffdf7;--ink:#1d2a22;--mute:#6b7569;--green:#1f5a40;--green2:#17452f;--gold:#e9a21b;--red:#c2412d;--blue:#2d6a9f;--line:#e2dac3;--chip:#efe7cf;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13201a;--card:#1b2b23;--ink:#f1ecda;--mute:#a5b0a4;--green:#4cb28a;--green2:#3a9272;--gold:#f0b43a;--red:#ee7a64;--blue:#6aaee0;--line:#2d4236;--chip:#243a2f;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.5}
+.ur{font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;direction:rtl;line-height:2}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.hidden{display:none!important}
+small{color:var(--mute)}
+#login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.hero{background:var(--green);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-size:clamp(40px,6vw,76px);line-height:1;margin:0;font-weight:800;letter-spacing:-2px}
+.hero .ur{font-size:clamp(28px,4vw,44px);color:var(--gold);margin:8px 0 0}
+.hero p{max-width:400px;opacity:.9}
+.fl{position:absolute;opacity:.22;animation:fl 9s ease-in-out infinite;z-index:0!important}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-30px) rotate(14deg)}}
+.panel{display:grid;place-items:center;padding:28px}
+.box{width:100%;max-width:400px}
+.box h2{font-size:28px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 6px}
+input,select{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 18%,transparent)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:12px;border:0;font-weight:600;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.main{background:var(--green);color:#fff;margin-top:16px}.btn.main:hover{background:var(--green2);box-shadow:0 8px 20px rgba(31,90,64,.3)}
+.btn.sale{background:var(--gold);color:#2a1d00}.btn.sale:hover{background:var(--gold);filter:brightness(.95)}
+.btn.g{background:var(--card);border:1.5px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.tabs{display:flex;background:var(--chip);border-radius:12px;padding:4px;margin-bottom:6px}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:9px;cursor:pointer;font-weight:600}
+.tabs button[aria-selected=true]{background:var(--card);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.or{display:flex;align-items:center;gap:12px;color:var(--mute);margin:14px 0 0;font-size:14px}.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.cap{display:flex;gap:8px;align-items:center}.cap canvas{border-radius:10px;border:1.5px solid var(--line);flex:none}
+.cap button{background:var(--chip);border:0;border-radius:10px;width:44px;height:44px;flex:none;cursor:pointer;font-size:18px;transition:transform .4s}
+.cap button:hover{transform:rotate(180deg)}
+.err{color:var(--red);font-size:14px;min-height:20px;margin-top:6px}.ok{color:var(--green);font-size:14px;min-height:20px;margin-top:6px}
+.shake{animation:sh .4s}@keyframes sh{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.box>*{animation:up .6s both}.box>*:nth-child(2){animation-delay:.08s}.box>*:nth-child(3){animation-delay:.14s}.box>*:nth-child(n+4){animation-delay:.2s}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:var(--green);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+aside .logo{font-size:21px;font-weight:800;line-height:1.2;margin-bottom:18px}aside .logo .ur{display:block;color:var(--gold);font-size:17px;font-weight:400}
+.nav{background:none;border:0;color:#fff;text-align:start;padding:12px 14px;border-radius:12px;cursor:pointer;opacity:.8;display:flex;gap:10px;align-items:center;transition:background .2s,transform .2s,opacity .2s}
+.nav:hover{background:rgba(255,255,255,.1);transform:translateX(4px);opacity:1}
+.nav[aria-current=true]{background:rgba(255,255,255,.2);opacity:1;font-weight:600}
+.me{margin-top:auto;font-size:14px;border-top:1px solid rgba(255,255,255,.2);padding-top:14px}.me button{margin-top:8px;background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:7px 16px;cursor:pointer}
+.content{padding:28px;max-width:1150px;width:100%}
+.view{animation:vin .45s both}@keyframes vin{from{opacity:0;transform:translateX(24px)}}
+h2.t{margin:0 0 4px;font-size:28px}.t+p{margin:0 0 18px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px}
+.card h3{margin:0 0 14px;font-size:19px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.head select{width:auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;border-top:5px solid var(--c);animation:pop .6s both;transition:transform .25s}
+.stat:hover{transform:translateY(-5px)}
+.stat:nth-child(2){animation-delay:.08s}.stat:nth-child(3){animation-delay:.16s}.stat:nth-child(4){animation-delay:.24s}
+@keyframes pop{from{opacity:0;transform:scale(.88) translateY(14px)}}
+.stat small{display:block}.stat b{font-size:23px;display:block;margin-top:2px}.stat span{font-size:22px;float:right}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.chart{display:flex;align-items:flex-end;gap:8px;height:190px;margin-top:8px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.pair{display:flex;gap:4px;align-items:flex-end;height:calc(100% - 22px);width:100%;justify-content:center}
+.pair i{width:40%;max-width:26px;border-radius:6px 6px 0 0;height:0;min-height:2px;transition:height 1s cubic-bezier(.2,.8,.2,1)}
+.col small{font-size:12px;height:22px}
+.leg{display:flex;gap:14px;font-size:13px;color:var(--mute)}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:5px}
+.rec{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.rec:last-child{border:0}
+.rec .ur{font-size:13px;display:block;line-height:1.6;color:var(--mute);direction:rtl;text-align:left}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cat{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;cursor:pointer;text-align:start;display:flex;flex-direction:column;transition:transform .2s,background .2s}
+.cat:hover{transform:translateY(-3px) rotate(-1deg)}
+.cat .ur{font-size:15px;color:var(--mute);line-height:1.7;text-align:right}
+.cat[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}.cat[aria-pressed=true] .ur{color:var(--gold)}
+.items{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+.chip{background:var(--chip);border:1.5px solid transparent;border-radius:999px;padding:6px 14px;cursor:pointer;display:flex;gap:8px;align-items:center;animation:pop .35s both;transition:transform .15s}
+.chip:hover{transform:scale(1.06)}.chip .ur{font-size:15px;line-height:1.6}
+.chip[aria-pressed=true]{border-color:var(--green);background:var(--card);box-shadow:inset 0 0 0 1px var(--green)}
+.chip.other{border:1.5px dashed var(--mute);background:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.qty{display:grid;grid-template-columns:1fr 95px;gap:8px}
+.picked{margin-top:12px;padding:10px 14px;background:var(--chip);border-radius:12px;font-weight:600}
+.pre{margin-top:14px;display:flex;gap:18px;flex-wrap:wrap;font-weight:600}
+.tools{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center}.tools input,.tools select{flex:1;min-width:130px;width:auto}
+.tools label{display:flex;align-items:center;gap:6px;margin:0;font-weight:400}.tools label input{width:auto}
+.tools button{background:var(--green);color:#fff;border:0;border-radius:12px;padding:10px 16px;cursor:pointer}
+.sum{display:flex;gap:20px;flex-wrap:wrap;background:var(--chip);border-radius:12px;padding:10px 16px;margin-bottom:12px;font-size:14px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:start;color:var(--mute);font-weight:600;padding:8px;border-bottom:1.5px solid var(--line);white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr{animation:up .4s both}tbody tr:hover{background:var(--chip)}
+td .ur{font-size:14px;display:block;color:var(--mute);line-height:1.7;direction:rtl;text-align:left}
+.pl{color:var(--green);font-weight:600}.mi{color:var(--red);font-weight:600}
+.tag{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:600}
+.tag.paid,.tag.ok{background:#d4efe0;color:#17452f}.tag.pending,.tag.low{background:#fbe0da;color:#8a2b1b}.tag.partial{background:#fbefc9;color:#7a5600}
+.mini{background:var(--chip);border:0;border-radius:8px;padding:3px 10px;font-size:12px;cursor:pointer;margin-top:4px}
+.del{background:none;border:0;color:var(--red);cursor:pointer;font-size:20px;transition:transform .2s}.del:hover{transform:scale(1.4) rotate(90deg)}
+.empty{color:var(--mute);padding:20px 0;text-align:center}
+.toast{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;z-index:20;animation:up .3s}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--green);z-index:10}
+.set{max-width:520px}
+.stat.clk{cursor:pointer}
+tr.clk{cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(10,20,15,.55);z-index:50;display:grid;place-items:center;padding:16px;overflow:auto}
+.mbox{background:var(--card);border-radius:18px;padding:22px;width:100%;max-width:560px;max-height:92vh;overflow:auto;border:1px solid var(--line)}
+.mbox h3{margin:0 0 4px;font-size:22px}
+.mgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.mgrid div{background:var(--chip);border-radius:12px;padding:10px 12px}.mgrid small{display:block}.mgrid b{font-size:18px}
+.mact{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.mact .btn{flex:1;min-width:120px;margin:0}
+.sum .pdc{color:var(--green)}.sum .pnc{color:var(--red)}
+.slip{font-family:'Courier New',monospace;color:#000;background:#fff;padding:14px;border:1px dashed #999;border-radius:8px;font-size:13px;line-height:1.5;direction:ltr}
+.slip h4{text-align:center;margin:0;font-size:17px}.slip .c{text-align:center}
+.slip .stamp{text-align:center;font-weight:700;border:2px solid #000;margin:8px 0;padding:3px;letter-spacing:1px}.slip .sm{font-size:11px;text-align:center}.slip .sig{display:flex;justify-content:space-between;gap:20px;margin-top:22px;font-size:11px}.slip .sig span{flex:1;border-top:1px solid #000;text-align:center;padding-top:2px}
+.slip hr{border:0;border-top:1px dashed #555;margin:8px 0}
+.slip .l{display:flex;justify-content:space-between;gap:10px}
+.slip .ur{font-size:13px;line-height:1.7}
+@media print{body *{visibility:hidden}#slipbox,#slipbox *{visibility:visible}#slipbox{position:absolute;left:0;top:0;width:76mm;border:0;padding:0}body::before{display:none}}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:760px){#login{grid-template-columns:1fr}.hero{padding:28px;min-height:230px}
+.shell{grid-template-columns:1fr}aside{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;flex-direction:row;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:9;gap:0}
+aside .logo,aside .me{display:none}.nav{flex-direction:column;gap:0;font-size:11px;padding:6px 8px}.content{padding:16px 14px 110px}.row3{grid-template-columns:1fr 1fr}}
+.acc>h3{cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin:0;user-select:none;gap:10px}
+.acc>h3::after{content:"+";font-size:26px;line-height:1;color:var(--green);transition:transform .25s;flex:none}
+.acc.open>h3{margin-bottom:14px}.acc.open>h3::after{transform:rotate(45deg)}
+.acc:not(.open)>:not(h3){display:none}
+.acc>h3:hover{color:var(--green)}
+.qa{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 0}.qa .btn{width:auto;flex:1;min-width:140px;margin:0}
+.mbox{animation:pop .25s both}
+@media(max-width:760px){
+input,select{font-size:16px}
+.row,.row3{grid-template-columns:1fr}
+.card{padding:16px;border-radius:16px}
+.stats{gap:10px}.stat b{font-size:19px}
+.cats{grid-template-columns:1fr 1fr}
+.nav{flex:1;min-width:0}
+.tools input,.tools select{min-width:100%}
+.btn{padding:14px}
+.modal{place-items:end center;padding:0}
+.mbox{border-radius:22px 22px 0 0;max-width:none;max-height:88vh;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));animation:sheet .28s both}
+@keyframes sheet{from{transform:translateY(100%)}}
+}
+/* professional login */
+.panel{background:radial-gradient(circle at 80% 0%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 45%),var(--bg)}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 28px;box-shadow:0 20px 50px rgba(23,69,47,.12),0 2px 6px rgba(23,69,47,.06)}
+.lcard .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.lcard .brand i{font-style:normal;width:46px;height:46px;border-radius:14px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 6px 14px rgba(31,90,64,.3)}
+.lcard .brand h2{margin:0;font-size:24px;line-height:1.2}.lcard .brand .sub{margin:0;font-size:13px}
+.lcard label{font-size:13px;letter-spacing:.2px;margin:14px 0 6px}
+.lcard input{padding:12px 14px;background:var(--bg)}
+.lcard input:focus{background:var(--card)}
+.lcard .btn.main{padding:14px;font-size:16px;letter-spacing:.3px;margin-top:18px}
+.lcard .btn.g{font-size:15px}
+.pwrap{position:relative}.pwrap input{padding-inline-end:64px}
+.pwrap button{position:absolute;inset-block:6px;inset-inline-end:6px;border:0;background:var(--chip);border-radius:9px;padding:0 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink)}
+.pwrap button:hover{background:var(--line)}
+.secure{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--mute);font-size:12px;margin-top:12px}
+.help{margin-top:18px;padding:14px 16px;border-radius:16px;background:var(--chip);border:1px solid var(--line);display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);transition:transform .2s,box-shadow .2s}
+.help:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(23,69,47,.15)}
+.help .ic{flex:none;width:44px;height:44px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:20px;position:relative}
+.help .ic::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:0;animation:ring 2.2s ease-out infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:.6}100%{transform:scale(1.25);opacity:0}}
+.help small{display:block;line-height:1.3}.help b{font-size:19px;letter-spacing:.5px;display:block;line-height:1.3}
+.help .h24{margin-inline-start:auto;flex:none;background:var(--gold);color:#2a1d00;font-weight:800;font-size:12px;padding:5px 10px;border-radius:99px;display:flex;align-items:center;gap:5px}
+.help .h24 i{width:7px;height:7px;border-radius:50%;background:#1f8a4c;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.help-ur{text-align:center;font-size:14px;color:var(--mute);margin-top:6px}
+.feats{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px;max-width:400px}
+.feats li{display:flex;gap:10px;align-items:center;font-size:15px;opacity:.95}
+.feats li span{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:14px;flex:none}
+@media(max-width:760px){.lcard{padding:22px 18px}.help b{font-size:17px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="hero" id="hero">
+    <div><h1>Shop Manager</h1><div class="ur">شاپ مینیجر</div></div>
+    <div><p>Purchase, sale, stock aur udhaar ka mukammal hisaab. Dal, chawal, sabzi, bakery, shop aur hotel, sab ek jagah.
+      <span class="ur" style="display:block;font-size:17px">خریداری، فروخت، اسٹاک اور اُدھار کا مکمل حساب</span></p>
+      <ul class="feats"><li><span>📦</span>Live stock &amp; profit tracking</li><li><span>📒</span>Udhaar khata with WhatsApp reminders</li><li><span>🧾</span>Print-ready slips &amp; receipts</li></ul></div>
+  </div>
+  <div class="panel"><div class="box lcard">
+    <div class="brand"><i aria-hidden="true">🛒</i><div><h2>Welcome <span class="ur" style="font-size:20px">خوش آمدید</span></h2><p class="sub">Sign in to manage your shop</p></div></div>
+    <div><div class="tabs"><button type="button" data-m="in" aria-selected="true">Login</button><button type="button" data-m="up" aria-selected="false">Sign up</button></div></div>
+    <div>
+      <button class="btn g" id="gbtn" type="button" style="margin-top:8px"><svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.6-2 15.4-5.6l-7.5-5.8c-2.1 1.4-4.8 2.3-7.9 2.3-6.3 0-11.7-4.1-13.6-9.9l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Continue with Google</button>
+      <div id="gform" class="hidden"><label for="gn">Google name</label><input id="gn" placeholder="Your name"><label for="ge">Google email</label><input id="ge" type="email" placeholder="you@gmail.com"></div>
+    </div>
+    <div id="manual">
+      <div class="or">or use email</div>
+      <div id="f_name" class="hidden"><label for="nm">Your name / آپ کا نام</label><input id="nm" placeholder="Full name"></div>
+      <label for="em">Email</label><input id="em" type="email" placeholder="you@example.com" autocomplete="email">
+      <label for="pw">Password</label><div class="pwrap"><input id="pw" type="password" placeholder="At least 6 characters" autocomplete="current-password"><button type="button" id="pwt" aria-label="Show or hide password">Show</button></div>
+      <div id="f_conf" class="hidden"><label for="pw2">Confirm password</label><input id="pw2" type="password" autocomplete="new-password"></div>
+      <label for="cp">Captcha: type the letters you see</label>
+      <div class="cap"><canvas id="cv" width="150" height="46" aria-label="Captcha image"></canvas><button type="button" id="rf" aria-label="New captcha">↻</button><input id="cp" placeholder="Captcha" autocomplete="off" maxlength="5"></div>
+    </div>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn main" id="lbtn" type="button" style="margin-top:4px">Login / لاگ اِن</button>
+    <div class="secure">🔒 Your data stays private on your device</div>
+    <a class="help" href="tel:03279588085" aria-label="Call helpline 0327 9588085, available 24/7">
+      <span class="ic" aria-hidden="true">📞</span>
+      <span><small>Need help? Call helpline</small><b>0327 9588085</b></span>
+      <span class="h24"><i></i>24/7</span>
+    </a>
+    <div class="help-ur ur">ہیلپ لائن ۲۴ گھنٹے، ساتوں دن حاضر</div>
+  </div></div>
+</section>
+
+<div class="shell hidden" id="app">
+  <aside>
+    <div class="logo">🛒 <span id="shopn">Shop Manager</span><span class="ur">شاپ مینیجر</span></div>
+    <button class="nav" data-v="dash">📊 Dashboard</button>
+    <button class="nav" data-v="p">📥 Purchase</button>
+    <button class="nav" data-v="s">📤 Sale</button>
+    <button class="nav" data-v="stock">📦 Stock</button>
+    <button class="nav" data-v="ud">📒 Udhaar</button>
+    <button class="nav" data-v="set">⚙️ Settings</button>
+    <div class="me"><div id="who"></div><button id="out" type="button">Logout</button></div>
+  </aside>
+  <div class="content">
+
+  <div class="view hidden" id="v-dash">
+    <div class="head"><div><h2 class="t">Dashboard <span class="ur" style="font-size:20px">ڈیش بورڈ</span></h2><p id="hello" style="margin:0"></p></div>
+      <select id="per" aria-label="Period"><option value="today">Today / آج</option><option value="7">Last 7 days</option><option value="month" selected>This month / اس مہینے</option><option value="all">All time</option></select></div>
+    <div class="qa"><button class="btn main" id="qp" type="button">📥 New purchase</button><button class="btn main sale" id="qs" type="button">📤 New sale</button><button class="btn g" id="qu" type="button">📒 Udhaar khata</button><button class="btn g" id="qk" type="button">📦 View stock</button></div>
+    <div class="stats" style="margin-top:16px">
+      <div class="stat" style="--c:var(--blue)"><span>📥</span><small>Purchases</small><b id="c1">0</b></div>
+      <div class="stat" style="--c:var(--gold)"><span>📤</span><small>Sales</small><b id="c2">0</b></div>
+      <div class="stat" style="--c:var(--green)"><span>📈</span><small>Profit</small><b id="c3">0</b></div>
+      <div class="stat" style="--c:var(--blue)"><span>📦</span><small>Stock value</small><b id="c4">0</b></div>
+    </div>
+    <div class="stats">
+      <div class="stat" style="--c:var(--green)"><span>🤝</span><small>Customers owe you</small><b id="c5">0</b></div>
+      <div class="stat" style="--c:var(--red)"><span>⏳</span><small>You owe suppliers</small><b id="c6">0</b></div>
+      <div class="stat" style="--c:var(--red)"><span>⚠️</span><small>Low stock items</small><b id="c7">0</b></div>
+      <div class="stat" style="--c:var(--gold)"><span>🧾</span><small>Transactions</small><b id="c8">0</b></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Last 7 days <span class="ur" style="font-size:15px">پچھلے 7 دن</span></h3>
+        <div class="leg"><span><i style="background:var(--blue)"></i>Purchase</span><span><i style="background:var(--gold)"></i>Sale</span></div><div class="chart" id="chart"></div></div>
+      <div class="card"><h3>Recent activity <span class="ur" style="font-size:15px">حالیہ</span></h3><div id="recent"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Top selling <span class="ur" style="font-size:15px">زیادہ بکنے والے</span></h3><div id="top"></div></div>
+      <div class="card"><h3>Low stock <span class="ur" style="font-size:15px">کم اسٹاک</span></h3><div id="lowl"></div></div>
+    </div>
+  </div>
+
+  <div class="view hidden" id="v-p"></div>
+  <div class="view hidden" id="v-s"></div>
+
+  <div class="view hidden" id="v-stock">
+    <h2 class="t">Stock <span class="ur" style="font-size:20px">اسٹاک</span></h2><p>Stock = everything purchased minus everything sold.</p>
+    <div class="card"><div class="tools"><input id="stq" placeholder="Search stock…" aria-label="Search stock"><select id="stc" aria-label="Category"></select><button id="stcsv" type="button">Export CSV</button></div>
+      <div class="sum" id="stsum"></div>
+      <div class="tw"><table><thead><tr><th>Item</th><th>Bought</th><th>Sold</th><th>In stock</th><th>Avg cost</th><th>Stock value</th><th></th></tr></thead><tbody id="strows"></tbody></table></div>
+      <div class="empty hidden" id="stempty">No stock yet. Add a purchase first.</div></div>
+  </div>
+
+  <div class="view hidden" id="v-ud">
+    <h2 class="t">Udhaar Khata <span class="ur" style="font-size:20px">اُدھار کھاتہ</span></h2><p>Who owes you money. Tap a name to receive payment or send a reminder.</p>
+    <div class="card"><h3>➕ Write new udhaar <span class="ur" style="font-size:15px">نیا اُدھار لکھیں</span></h3>
+      <div class="row"><div><label for="ud_n">Customer name / گاہک</label><input id="ud_n" list="pl" placeholder="Name"></div><div><label for="ud_a">Amount (Rs)</label><input id="ud_a" type="number" min="0" step="any"></div></div>
+      <div class="row"><div><label for="ud_d">Date / تاریخ</label><input id="ud_d" type="date"></div><div><label for="ud_note">Note / نوٹ</label><input id="ud_note" placeholder="Optional"></div></div>
+      <button class="btn sale" id="ud_save" type="button" style="margin-top:14px">Save udhaar / اُدھار محفوظ کریں</button><div class="err" id="ud_err" role="alert"></div></div>
+    <div class="card" id="udcard"><h3>📒 Customers list <span class="ur" style="font-size:15px">اُدھار والے گاہک</span></h3>
+      <div class="tools"><input id="udq" placeholder="Search customer…" aria-label="Search customer"></div>
+      <div class="sum" id="udsum"></div>
+      <div class="tw"><table><thead><tr><th>Customer</th><th>Last entry</th><th style="text-align:end">Udhaar</th></tr></thead><tbody id="udrows"></tbody></table></div>
+      <div class="empty hidden" id="udempty">No udhaar. Everyone has paid.</div></div>
+    <datalist id="pl"></datalist>
+  </div>
+  <div class="view hidden" id="v-set"><div class="set">
+    <h2 class="t">Settings <span class="ur" style="font-size:20px">ترتیبات</span></h2><p>Shop details, password and backup.</p>
+    <div class="card"><h3>🏪 Shop</h3>
+      <label for="sn">Shop name</label><input id="sn">
+      <label for="lw">Low stock alert (units)</label><input id="lw" type="number" min="0" step="any">
+      <label for="mg">Default sale margin over cost (%) — used for auto sale rate</label><input id="mg" type="number" min="0" step="any">
+      <label for="sph">Shop phone (printed on receipt)</label><input id="sph" type="tel"><label for="sad">Shop address (printed on receipt)</label><input id="sad">
+      <button class="btn main" id="ssave" type="button">Save settings</button><div class="ok" id="sok"></div></div>
+    <div class="card" id="pwcard"><h3>🔑 Change password <span class="ur" style="font-size:15px">پاس ورڈ تبدیل کریں</span></h3>
+      <label for="op">Current password</label><input id="op" type="password" autocomplete="current-password">
+      <label for="np">New password</label><input id="np" type="password" autocomplete="new-password">
+      <label for="np2">Confirm new password</label><input id="np2" type="password" autocomplete="new-password">
+      <div class="err" id="perr" role="alert"></div>
+      <button class="btn main" id="pbtn" type="button" style="margin-top:4px">Update password</button></div>
+    <div class="card"><h3>👤 Account</h3><button class="btn red" id="out2" type="button">Logout</button></div>
+    <div class="card"><h3>💾 Backup &amp; data</h3>
+      <button class="btn g" id="bk" type="button">Download backup (JSON)</button>
+      <label for="rs">Restore from backup</label><input id="rs" type="file" accept=".json">
+      <button class="btn red" id="clr" type="button" style="margin-top:16px">Delete all my data</button><div class="err" id="derr"></div></div>
+  </div></div>
+
+  </div>
+</div>
+<div class="toast hidden" id="toast"></div>
+<div class="modal hidden" id="modal"><div class="mbox" id="mbox"></div></div>
+
+<script>
+const CATS=[
+{id:"dal",en:"Dal / Pulses",ur:"دالیں",u:"kg",items:[["Masoor","مسور"],["Moong","مونگ"],["Mash","ماش"],["Chana","چنا"],["Arhar","ارہر"],["Rajma","راجما"],["Lobia","لوبیا"],["Kala chana","کالا چنا"]]},
+{id:"rice",en:"Rice & Flour",ur:"چاول اور آٹا",u:"kg",items:[["Basmati rice","باسمتی چاول"],["Sella rice","سیلا چاول"],["Irri rice","اری چاول"],["Wheat flour (Atta)","گندم کا آٹا"],["Maida","میدہ"],["Suji","سوجی"],["Besan","بیسن"]]},
+{id:"veg",en:"Vegetables",ur:"سبزیاں",u:"kg",items:[["Potato","آلو"],["Onion","پیاز"],["Tomato","ٹماٹر"],["Garlic","لہسن"],["Ginger","ادرک"],["Okra","بھنڈی"],["Cauliflower","گوبھی"],["Spinach","پالک"],["Peas","مٹر"],["Carrot","گاجر"],["Green chilli","ہری مرچ"],["Cucumber","کھیرا"],["Turnip","شلجم"]]},
+{id:"fruit",en:"Fruits",ur:"پھل",u:"kg",items:[["Apple","سیب"],["Banana","کیلا"],["Mango","آم"],["Orange","مالٹا"],["Grapes","انگور"],["Pomegranate","انار"],["Guava","امرود"],["Dates","کھجور"]]},
+{id:"spice",en:"Spices & Oil",ur:"مصالحے اور تیل",u:"kg",items:[["Red chilli","لال مرچ"],["Turmeric","ہلدی"],["Coriander","دھنیا"],["Cumin","زیرہ"],["Salt","نمک"],["Sugar","چینی"],["Cooking oil","کوکنگ آئل"],["Ghee","گھی"],["Tea","چائے"]]},
+{id:"dairy",en:"Dairy & Eggs",ur:"دودھ اور انڈے",u:"litre",items:[["Milk","دودھ"],["Yogurt","دہی"],["Butter","مکھن"],["Cheese","پنیر"],["Eggs","انڈے"],["Cream","کریم"]]},
+{id:"meat",en:"Meat & Fish",ur:"گوشت اور مچھلی",u:"kg",items:[["Chicken","مرغی"],["Beef","گائے کا گوشت"],["Mutton","بکرے کا گوشت"],["Fish","مچھلی"]]},
+{id:"bakery",en:"Bakery items",ur:"بیکری",u:"piece",items:[["Bread","ڈبل روٹی"],["Rusk","رس"],["Biscuits","بسکٹ"],["Cake","کیک"],["Naan","نان"],["Samosa","سموسہ"],["Patties","پیٹیز"],["Cookies","کوکیز"]]},
+{id:"shop",en:"Shop items",ur:"دکان کا سامان",u:"piece",items:[["Soap","صابن"],["Shampoo","شیمپو"],["Detergent","سرف"],["Cold drink","کولڈ ڈرنک"],["Chips","چپس"],["Cigarette","سگریٹ"],["Mobile card","موبائل کارڈ"],["Batteries","بیٹری"],["Notebook","کاپی"]]},
+{id:"hotel",en:"Hotel items",ur:"ہوٹل کا سامان",u:"kg",items:[["Cooking gas","گیس"],["Tandoor roti","روٹی"],["Plates","پلیٹیں"],["Glasses","گلاس"],["Tissue","ٹشو"],["Disposable boxes","ڈسپوزیبل ڈبے"],["Charcoal","کوئلہ"]]},
+{id:"other",en:"Other",ur:"دیگر",u:"kg",items:[]}
+];
+const UNITS=["kg","g","piece","dozen","litre","packet","bag","box"];
+const $=i=>document.getElementById(i);
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const rs=n=>"Rs "+Math.round(n).toLocaleString("en-PK");
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cn=id=>CATS.find(c=>c.id===id)||CATS[CATS.length-1];
+const pad=n=>("0"+n).slice(-2);
+const dstr=o=>{const d=new Date();d.setDate(d.getDate()+o);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const toast=m=>{const t=$("toast");t.textContent=m;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),1900)};
+let USERS=ld("sm_users",{}),U=null,DB=null,code="",mode="in",built=false;
+const S={p:{},s:{}},T={p:false,s:false};
+const saveDB=()=>sv("sm_db_"+U.email,DB);
+const keyOf=d=>d.cat+"|"+d.en.toLowerCase().trim()+"|"+d.u;
+const tot=d=>d.q*d.pr, due=d=>Math.max(0,tot(d)-d.paid);
+const status=d=>due(d)<=0?"paid":d.paid<=0?"pending":"partial";
+
+/* floating emojis */
+[..."🥬🍅🧅🍞🫘🍚🥕🍋🥚🥛"].forEach((e,i)=>{const s=document.createElement("span");s.className="fl";s.textContent=e;s.style.cssText=`left:${5+i*9.5}%;top:${8+(i*37)%80}%;animation-delay:-${i*.9}s;font-size:${26+i%4*8}px`;$("hero").appendChild(s)});
+
+/* captcha */
+function newCap(){const ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";code="";for(let i=0;i<5;i++)code+=ch[Math.floor(Math.random()*ch.length)];
+ const x=$("cv").getContext("2d");x.fillStyle="#f3ecd6";x.fillRect(0,0,150,46);
+ for(let i=0;i<7;i++){x.strokeStyle=`hsl(${Math.random()*360},45%,55%)`;x.lineWidth=1.5;x.beginPath();x.moveTo(Math.random()*150,Math.random()*46);x.lineTo(Math.random()*150,Math.random()*46);x.stroke()}
+ for(let i=0;i<5;i++){x.save();x.translate(18+i*27,25+Math.random()*6);x.rotate((Math.random()-.5)*.6);x.font=`bold ${24+Math.random()*6}px sans-serif`;x.fillStyle=`hsl(${Math.random()*360},55%,28%)`;x.textAlign="center";x.fillText(code[i],0,0);x.restore()}
+ for(let i=0;i<40;i++){x.fillStyle="rgba(0,0,0,.25)";x.fillRect(Math.random()*150,Math.random()*46,2,2)}$("cp").value=""}
+$("rf").onclick=newCap;newCap();
+
+/* auth */
+async function hp(e,p){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(e+"::"+p));return[...new Uint8Array(b)].map(x=>("0"+x.toString(16)).slice(-2)).join("")}catch(err){let h=5381;const s=e+"::"+p;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return"f"+h}}
+function setMode(m){mode=m;document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.m===m));
+ $("f_name").classList.toggle("hidden",m!=="up");$("f_conf").classList.toggle("hidden",m!=="up");
+ $("lbtn").textContent=m==="in"?"Login / لاگ اِن":"Create account / اکاؤنٹ بنائیں";$("err").textContent="";newCap()}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+function bad(m){$("err").textContent=m;const b=$("lbtn");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");newCap()}
+$("gbtn").onclick=()=>{$("gform").classList.toggle("hidden");$("manual").classList.toggle("hidden");$("lbtn").textContent=$("gform").classList.contains("hidden")?(mode==="in"?"Login / لاگ اِن":"Create account / اکاؤنٹ بنائیں"):"Sign in with Google"};
+$("lbtn").onclick=async()=>{
+ if(!$("gform").classList.contains("hidden")){const e=$("ge").value.trim().toLowerCase();
+  if(!/\S+@\S+\.\S+/.test(e))return bad("Enter a valid Google email.");
+  if(!USERS[e]){USERS[e]={name:$("gn").value.trim()||e.split("@")[0],via:"google"};sv("sm_users",USERS)}return enter(e)}
+ const e=$("em").value.trim().toLowerCase(),p=$("pw").value;
+ if(!/\S+@\S+\.\S+/.test(e))return bad("Enter a valid email address.");
+ if(p.length<6)return bad("Password must be at least 6 characters.");
+ if($("cp").value.trim().toUpperCase()!==code)return bad("Captcha does not match. Try the new one.");
+ const h=await hp(e,p);
+ if(mode==="up"){if(USERS[e])return bad("This email already has an account. Use Login.");if(p!==$("pw2").value)return bad("Passwords do not match.");
+  USERS[e]={name:$("nm").value.trim()||e.split("@")[0],hash:h};sv("sm_users",USERS);enter(e)}
+ else{const u=USERS[e];if(!u)return bad("No account found. Use Sign up first.");if(!u.hash)return bad("This is a Google account. Use Continue with Google.");if(u.hash!==h)return bad("Wrong password.");enter(e)}};
+$("out").onclick=()=>{try{localStorage.removeItem("sm_session")}catch(e){}location.reload()};
+
+function enter(e){U={email:e,...USERS[e]};sv("sm_session",e);DB=ld("sm_db_"+e,null)||{p:[],s:[],shop:"Shop Manager",low:5,margin:10};DB.ud=DB.ud||[];DB.pay=DB.pay||[];
+ $("login").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent="👤 "+U.name;
+ if(!built){initTx("p");initTx("s");["v-p","v-s"].forEach(i=>makeAcc($(i)));built=true}
+ ["p","s"].forEach(m=>{Object.keys(S[m]).forEach(k=>{if(k!=="touch")delete S[m][k]});$(m+"_s2").classList.add("hidden");[...$(m+"_cats").children].forEach(b=>b.setAttribute("aria-pressed","false"));draw(m)});
+ shopName();$("pwcard").classList.toggle("hidden",!U.hash);go("dash")}
+function shopName(){$("shopn").textContent=DB.shop||"Shop Manager";document.title=(DB.shop||"Shop Manager")+" – شاپ مینیجر"}
+
+/* nav */
+function go(v){["dash","p","s","stock","ud","set"].forEach(k=>$("v-"+k).classList.toggle("hidden",k!==v));
+ document.querySelectorAll(".nav").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v));
+ if(v==="dash")dash();if(v==="stock")drawStock();if(v==="set"){$("sn").value=DB.shop;$("sph").value=DB.phone||"";$("sad").value=DB.addr||"";$("lw").value=DB.low;$("mg").value=DB.margin==null?10:DB.margin}
+ if(v==="p"||v==="s"){const d=$(v+"_date");if(!d.value)d.value=dstr(0);items(v)}if(v==="ud"){$("ud_d").value=$("ud_d").value||dstr(0);drawUd()}window.scrollTo(0,0)}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>go(b.dataset.v));
+
+/* stock */
+function stock(){const m={};
+ const o=d=>m[keyOf(d)]||(m[keyOf(d)]={k:keyOf(d),cat:d.cat,en:d.en,ur:d.ur,u:d.u,pq:0,pc:0,sq:0,sr:0,lastS:0,lastP:0,lpi:0,lsi:0});
+ DB.p.forEach(d=>{const x=o(d);x.pq+=d.q;x.pc+=d.q*d.pr;if(d.id>=x.lpi){x.lpi=d.id;x.lastP=d.pr}});
+ DB.s.forEach(d=>{const x=o(d);x.sq+=d.q;x.sr+=d.q*d.pr;if(d.id>=x.lsi){x.lsi=d.id;x.lastS=d.pr}});
+ Object.values(m).forEach(x=>{x.left=x.pq-x.sq;x.avg=x.pq?x.pc/x.pq:0;x.val=Math.max(0,x.left)*x.avg});return m}
+const profitOf=(d,st)=>{const x=st[keyOf(d)];return d.q*(d.pr-(x?x.avg:0))};
+
+/* purchase / sale pages */
+function txHTML(m){const P=m==="p",who=P?"Supplier / دکاندار":"Customer / گاہک";
+return `<h2 class="t">${P?'Purchase <span class="ur" style="font-size:20px">خریداری</span>':'Sale <span class="ur" style="font-size:20px">فروخت</span>'}</h2>
+<p>${P?"Buy stock from suppliers. It is added to your stock automatically.":"Sell from your stock. Quantity is checked against what you have."}</p>
+<div class="card"><h3>➕ ${P?"New purchase":"New sale"} <span class="ur" style="font-size:15px">${P?"نئی خریداری":"نئی فروخت"}</span></h3><small>Step 1: choose a category / قسم چنیں</small><div class="cats" id="${m}_cats"></div>
+<div id="${m}_s2" class="hidden"><h3 style="margin-top:20px">2. Item <span class="ur" style="font-size:15px">کون سی چیز؟</span></h3><div class="items" id="${m}_items"></div>
+${P?`<div id="${m}_other" class="hidden row"><div><label for="${m}_oe">Name (English)</label><input id="${m}_oe" placeholder="e.g. Brown rice"></div><div><label for="${m}_ou">نام (اردو)</label><input id="${m}_ou" class="ur" style="line-height:1.6" placeholder="مثلاً براؤن چاول"></div></div>`:""}
+<div class="picked" id="${m}_picked"></div>
+<h3 style="margin-top:20px">3. Details <span class="ur" style="font-size:15px">تفصیل</span></h3>
+<div class="row3"><div><label for="${m}_date">${P?"Purchasing date / خریداری کی تاریخ":"Sale date / فروخت کی تاریخ"}</label><input id="${m}_date" type="date"></div>
+<div><label for="${m}_q">Quantity / مقدار</label><div class="qty"><input id="${m}_q" type="number" min="0" step="any"><select id="${m}_u"></select></div></div>
+<div><label for="${m}_pr">${P?"Purchase":"Sale"} price (Rs / unit)</label><input id="${m}_pr" type="number" min="0" step="any"></div></div>
+<div class="row"><div><label for="${m}_party">${who}</label><input id="${m}_party" list="pl" placeholder="${P?"Name (optional)":"Name (required if udhaar)"}"></div>
+<div><label for="${m}_paid">Amount ${P?"paid":"received"} now (Rs)</label><input id="${m}_paid" type="number" min="0" step="any"></div></div>
+<div class="row"><div><label for="${m}_mth">Method / طریقہ</label><select id="${m}_mth"><option>Cash</option><option>Easypaisa</option><option>JazzCash</option><option>Bank</option><option>Udhaar</option></select></div>
+<div><label for="${m}_note">Note / نوٹ</label><input id="${m}_note" placeholder="Optional"></div></div>
+<div class="pre"><span>Total: <b id="${m}_t">Rs 0</b></span><span>${P?"Paid":"Received"}: <b id="${m}_pd">Rs 0</b></span><span>Due: <b id="${m}_du">Rs 0</b></span>${P?"":`<span>Profit: <b id="${m}_pf">Rs 0</b></span>`}</div>
+<button class="btn main ${P?"":"sale"}" id="${m}_save" type="button">${P?"Save purchase / خریداری محفوظ کریں":"Save sale / فروخت محفوظ کریں"}</button><div class="err" id="${m}_err" role="alert"></div></div></div>
+<div class="card"><h3>📋 ${P?"Purchase records":"Sale records"} <span class="ur" style="font-size:15px">${P?"خریداری کا ریکارڈ":"فروخت کا ریکارڈ"}</span></h3>
+<div class="tools"><input id="${m}_q2" placeholder="Search item, ${P?"supplier":"customer"}, note…" aria-label="Search"><select id="${m}_flt" aria-label="Category"></select></div>
+<div class="tools"><input id="${m}_d1" type="date" aria-label="From date" title="From"><input id="${m}_d2" type="date" aria-label="To date" title="To"><select id="${m}_pend" aria-label="Payment status"><option value="">All payments</option><option value="pending">Pending only</option><option value="paid">Paid only</option></select><button id="${m}_csv" type="button">Export CSV</button></div>
+<div class="sum" id="${m}_sum"></div>
+<div class="tw"><table><thead><tr><th>Date</th><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th><th>Paid</th><th>Pending (Udhaar)</th><th>${P?"Supplier":"Customer"}</th>${P?"":"<th>Profit</th>"}<th></th></tr></thead><tbody id="${m}_rows"></tbody></table></div>
+<div class="empty hidden" id="${m}_empty">No records yet.</div></div>`}
+
+function initTx(m){const P=m==="p",st=S[m],g=n=>$(m+"_"+n);
+ $("v-"+m).innerHTML=txHTML(m);
+ g("cats").innerHTML=CATS.map(c=>`<button class="cat" type="button" aria-pressed="false" data-id="${c.id}"><span>${c.en}</span><span class="ur">${c.ur}</span></button>`).join("");
+ g("flt").innerHTML='<option value="">All categories / تمام</option>'+CATS.map(c=>`<option value="${c.id}">${c.en} · ${c.ur}</option>`).join("");
+ g("cats").onclick=e=>{const b=e.target.closest(".cat");if(!b)return;S[m].cat=cn(b.dataset.id);S[m].item=null;S[m].other=P&&S[m].cat.id==="other";
+  [...g("cats").children].forEach(x=>x.setAttribute("aria-pressed",x===b));g("s2").classList.remove("hidden");items(m)};
+ g("items").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;
+  [...g("items").children].forEach(x=>x.setAttribute("aria-pressed","false"));
+  if(b.dataset.o){S[m].other=true;S[m].item=null;g("other").classList.remove("hidden");g("oe").focus()}
+  else{S[m].other=false;S[m].item=P?{en:S[m].cat.items[+b.dataset.i][0],ur:S[m].cat.items[+b.dataset.i][1],u:S[m].cat.u}:S[m].list[+b.dataset.i];b.setAttribute("aria-pressed","true");if(P)g("other").classList.add("hidden")}
+  pick(m)};
+ g("u").innerHTML=UNITS.map(u=>`<option>${u}</option>`).join("");
+ st.touch=()=>{T[m]=false};
+ g("paid").oninput=()=>{T[m]=true;calc(m)};
+ g("mth").onchange=()=>{if(g("mth").value==="Udhaar"){g("paid").value=0;T[m]=true}else{T[m]=false;g("paid").value=(+g("q").value||0)*(+g("pr").value||0)||""}calc(m)};
+ ["q","pr"].forEach(n=>g(n).oninput=()=>{if(!T[m])g("paid").value=(+g("q").value||0)*(+g("pr").value||0)||"";calc(m)});
+ ["q2","d1","d2","flt","pend"].forEach(n=>g(n).oninput=()=>draw(m));
+ g("save").onclick=()=>save(m);
+ g("rows").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.slip){slip(m,b.dataset.slip);return}
+  if(b.dataset.del){DB[m]=DB[m].filter(d=>d.id!=b.dataset.del)}else if(b.dataset.set){const d=DB[m].find(x=>x.id==b.dataset.set);d.paid=tot(d)}
+  saveDB();draw(m);items(m)};
+ g("csv").onclick=()=>{const stt=stock();csv(P?"purchases":"sales",[["Date","Category","Item","Urdu","Qty","Unit","Rate","Total","Paid","Due","Party","Method","Note"].concat(P?[]:["Profit"])].concat(list(m).map(d=>[d.date,cn(d.cat).en,d.en,d.ur,d.q,d.u,d.pr,tot(d),d.paid,due(d),d.party,d.mth,d.note].concat(P?[]:[profitOf(d,stt)]))))}}
+
+function items(m){const P=m==="p",st=S[m],g=n=>$(m+"_"+n);if(!st.cat){return}
+ if(P){g("items").innerHTML=st.cat.items.map((it,i)=>`<button class="chip" style="animation-delay:${i*30}ms" type="button" aria-pressed="${st.item&&st.item.en===it[0]}" data-i="${i}"><span>${it[0]}</span><span class="ur">${it[1]}</span></button>`).join("")+'<button class="chip other" type="button" data-o="1">+ Other / دیگر</button>';g("other").classList.toggle("hidden",!st.other)}
+ else{st.list=Object.values(stock()).filter(x=>x.cat===st.cat.id&&x.left>0);
+  g("items").innerHTML=st.list.length?st.list.map((x,i)=>`<button class="chip" style="animation-delay:${i*30}ms" type="button" aria-pressed="${st.item&&st.item.k===x.k}" data-i="${i}"><span>${esc(x.en)}</span><span class="ur">${esc(x.ur)}</span><small>${+x.left.toFixed(2)} ${x.u}</small></button>`).join(""):'<span class="empty" style="padding:6px 0">No stock in this category. Add a purchase first.</span>';
+  if(st.item){const f=st.list.find(x=>x.k===st.item.k);st.item=f||null}}
+ pick(m)}
+function pick(m){const P=m==="p",st=S[m],g=n=>$(m+"_"+n),p=g("picked");
+ if(P&&st.other){p.textContent="Adding: custom item";g("u").value=st.cat.u;st.lastK=null}
+ else if(st.item){
+  const k=keyOf({cat:st.cat.id,en:st.item.en,u:st.item.u}),sx=stock()[k];
+  const left=sx?sx.left:0,avg=sx?sx.avg:0,lp=sx?sx.lastP:0,ls=sx?sx.lastS:0;
+  p.innerHTML=`${esc(st.item.en)} · <span class="ur">${esc(st.item.ur)}</span> &nbsp; <small>In stock: <b>${+left.toFixed(2)} ${st.item.u}</b>${P?` · Last buy rate ${lp?rs(lp):"-"}`:` · Avg cost ${rs(avg)}`}</small>`;
+  if(P)g("u").value=st.item.u;else g("u").innerHTML=`<option>${st.item.u}</option>`;
+  if(st.lastK!==k){st.lastK=k;
+   const mg=DB.margin==null?10:DB.margin;
+   const r=P?lp:(ls||(avg?Math.ceil(avg*(1+mg/100)):0));
+   g("pr").value=r?+(+r).toFixed(2):"";
+   if(!T[m])g("paid").value=(+g("q").value||0)*(+g("pr").value||0)||""}}
+ else{p.textContent=P?"Choose the item you want to buy":"Choose the item you want to sell";if(!P)g("u").innerHTML=UNITS.map(u=>`<option>${u}</option>`).join("");if(P&&st.cat)g("u").value=st.cat.u;st.lastK=null}
+ calc(m)}
+function calc(m){const g=n=>$(m+"_"+n),q=+g("q").value||0,pr=+g("pr").value||0,t=q*pr,pd=+g("paid").value||0;
+ g("t").textContent=rs(t);g("pd").textContent=rs(pd);g("du").textContent=rs(Math.max(0,t-pd));
+ if(m==="s"){const x=S.s.item;const pf=x?q*(pr-x.avg):0;g("pf").textContent=rs(pf);g("pf").className=pf<0?"mi":"pl"}}
+function save(m){const P=m==="p",st=S[m],g=n=>$(m+"_"+n),er=g("err");let en,ur,u;
+ if(!st.cat){er.textContent="Select a category first.";return}
+ if(P&&st.other){en=g("oe").value.trim();ur=g("ou").value.trim();if(!en&&!ur){er.textContent="Type the item name in English or Urdu.";return}en=en||ur;ur=ur||en;u=g("u").value}
+ else if(st.item){en=st.item.en;ur=st.item.ur;u=st.item.u}else{er.textContent="Select an item first"+(P?", or choose Other.":".");return}
+ const q=+g("q").value,pr=+g("pr").value;
+ if(!(q>0)){er.textContent="Enter the quantity.";return}
+ if(!(pr>0)){er.textContent="Enter the price per unit.";return}
+ if(!P&&q>st.item.left+1e-9){er.textContent=`Only ${+st.item.left.toFixed(2)} ${u} in stock.`;return}
+ if(!g("date").value){er.textContent="Select the date.";return}
+ const t=q*pr,pd=g("paid").value===""?t:Math.min(+g("paid").value,t);
+ if(!P&&t-pd>0.0001&&!g("party").value.trim()){er.textContent="Udhaar sale: enter the customer name.";return}
+ er.textContent="";
+ const rec={id:Date.now(),date:g("date").value,cat:st.cat.id,en,ur,q,u,pr,paid:pd,party:g("party").value.trim(),mth:g("mth").value,note:g("note").value.trim()};DB[m].unshift(rec);
+ saveDB();["q","pr","paid","party","note","oe","ou"].forEach(n=>{const e=g(n);if(e)e.value=""});st.touch();
+ st.lastK=null;st.item=P?st.item:null;g("mth").value="Cash";items(m);draw(m);toast(P?"Purchase saved ✓":"Sale saved ✓");slip(m,rec.id)}
+function list(m){const g=n=>$(m+"_"+n),q=g("q2").value.toLowerCase(),c=g("flt").value,a=g("d1").value,b=g("d2").value,pe=g("pend").value;
+ return DB[m].filter(d=>(!c||d.cat===c)&&(!q||(d.en+d.ur+d.party+d.note).toLowerCase().includes(q))&&(!a||d.date>=a)&&(!b||d.date<=b)&&(!pe||(pe==="pending"?due(d)>0:due(d)<=0))).sort((x,y)=>y.date.localeCompare(x.date)||y.id-x.id)}
+function draw(m){const P=m==="p",L=list(m),stt=stock(),g=n=>$(m+"_"+n);let T0=0,PD=0,PF=0;
+ g("rows").innerHTML=L.map((d,i)=>{T0+=tot(d);PD+=d.paid;const pf=P?0:profitOf(d,stt);PF+=pf;const dv=due(d);
+  return `<tr style="animation-delay:${Math.min(i,12)*25}ms"><td>${d.date}</td><td><b>${esc(d.en)}</b><span class="ur">${esc(d.ur)}</span><small>${cn(d.cat).en}</small>${d.note?`<br><small>📝 ${esc(d.note)}</small>`:""}</td><td>${d.q} ${d.u}</td><td>${rs(d.pr)}</td><td><b>${rs(tot(d))}</b></td><td><b class="pl">${rs(d.paid)}</b><br><small>${esc(d.mth)}</small></td><td>${dv>0?`<b class="mi">${rs(dv)}</b><br><button class="mini" type="button" data-set="${d.id}">Mark settled</button>`:`<span class="tag paid">Clear</span>`}</td><td>${esc(d.party||"-")}</td>${P?"":`<td class="${pf<0?"mi":"pl"}">${rs(pf)}</td>`}<td><button class="mini" type="button" data-slip="${d.id}">🧾 Slip</button><br><button class="del" type="button" aria-label="Delete" data-del="${d.id}">×</button></td></tr>`}).join("");
+ g("empty").classList.toggle("hidden",L.length>0);
+ g("sum").innerHTML=`<span>${L.length} records</span><span>Total <b>${rs(T0)}</b></span><span class="pdc">${P?"Paid":"Received"} <b>${rs(PD)}</b></span><span class="pnc">Pending (Udhaar) <b>${rs(T0-PD)}</b></span>`+(P?"":`<span>Profit <b class="${PF<0?"mi":"pl"}">${rs(PF)}</b></span>`)}
+
+/* stock page */
+$("stc").innerHTML='<option value="">All categories / تمام</option>'+CATS.map(c=>`<option value="${c.id}">${c.en} · ${c.ur}</option>`).join("");
+$("stq").oninput=$("stc").onchange=()=>drawStock();
+function stockList(){const q=$("stq").value.toLowerCase(),c=$("stc").value;return Object.values(stock()).filter(x=>(!c||x.cat===c)&&(!q||(x.en+x.ur).toLowerCase().includes(q))).sort((a,b)=>a.left-b.left)}
+function drawStock(){const L=stockList();
+ $("strows").innerHTML=L.map(x=>{const low=x.left<=DB.low;return `<tr class="clk" data-k="${esc(x.k)}"><td><b>${esc(x.en)}</b><span class="ur">${esc(x.ur)}</span><small>${cn(x.cat).en}</small></td><td>${+x.pq.toFixed(2)} ${x.u}</td><td>${+x.sq.toFixed(2)} ${x.u}</td><td><b class="${x.left<0?"mi":""}">${+x.left.toFixed(2)} ${x.u}</b></td><td>${rs(x.avg)}</td><td>${rs(x.val)}</td><td><span class="tag ${low?"low":"ok"}">${x.left<=0?"out":low?"low":"ok"}</span></td></tr>`}).join("");
+ $("stsum").innerHTML=`<span>${L.length} items</span><span>Stock value <b>${rs(L.reduce((a,x)=>a+x.val,0))}</b></span><span class="pnc">Low / out <b>${L.filter(x=>x.left<=DB.low).length}</b></span><span><small>Tap an item for full detail</small></span>`;
+ $("stempty").classList.toggle("hidden",L.length>0)}
+$("strows").onclick=e=>{const r=e.target.closest("tr");if(r&&r.dataset.k)stockDetail(r.dataset.k)};
+
+/* modal: stock detail + slip */
+const closeM=()=>$("modal").classList.add("hidden");
+$("modal").onclick=e=>{if(e.target.id==="modal"||e.target.id==="mclose")closeM();const b=e.target.closest("[data-sl]");if(b){const a=b.dataset.sl.split(":");if(a[0]==="pay")paySlip(a[1]);else slip(a[0],a[1])}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+function stockDetail(k){const x=stock()[k];if(!x)return;
+ const rec=[...DB.p.filter(d=>keyOf(d)===k).map(d=>({...d,t:"p"})),...DB.s.filter(d=>keyOf(d)===k).map(d=>({...d,t:"s"}))].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+ const low=x.left<=DB.low;
+ $("mbox").innerHTML=`<h3>${esc(x.en)} <span class="ur" style="font-size:18px">${esc(x.ur)}</span></h3><small>${cn(x.cat).en}</small>
+ <div class="mgrid"><div><small>In stock now</small><b class="${low?"mi":"pl"}">${+x.left.toFixed(2)} ${x.u}</b></div><div><small>Stock value</small><b>${rs(x.val)}</b></div><div><small>Total bought</small><b>${+x.pq.toFixed(2)} ${x.u}</b></div><div><small>Total sold</small><b>${+x.sq.toFixed(2)} ${x.u}</b></div><div><small>Avg cost</small><b>${rs(x.avg)}</b></div><div><small>Last buy / sale rate</small><b>${x.lastP?rs(x.lastP):"-"} / ${x.lastS?rs(x.lastS):"-"}</b></div></div>
+ <h3 style="font-size:16px">History</h3>
+ <div class="tw"><table><tbody>${rec.map(d=>`<tr><td>${d.date}</td><td><span class="tag ${d.t==="p"?"partial":"paid"}">${d.t==="p"?"Bought":"Sold"}</span></td><td>${d.q} ${d.u}</td><td>${rs(d.pr)}</td><td><b>${rs(tot(d))}</b></td><td>${due(d)>0?`<span class="mi">Pending ${rs(due(d))}</span>`:""}</td><td><button class="mini" type="button" data-sl="${d.t}:${d.id}">Slip</button></td></tr>`).join("")}</tbody></table></div>
+ <div class="mact"><button class="btn g" id="mclose" type="button">Close</button></div>`;
+ $("modal").classList.remove("hidden")}
+const slipHead=(shop,title)=>`<h4>${esc(shop)}</h4>${DB.addr?`<div class="sm">${esc(DB.addr)}</div>`:""}${DB.phone?`<div class="sm">Ph: ${esc(DB.phone)}</div>`:""}<hr><div class="c"><b>${title}</b></div>`;
+function slipActions(txt){$("mbox").insertAdjacentHTML("beforeend",`<div class="mact"><button class="btn main" id="mprint" type="button">🖨️ Print / Save PDF</button><button class="btn g" id="mwa" type="button">WhatsApp</button><button class="btn g" id="mclose" type="button">Close</button></div>`);
+ $("modal").classList.remove("hidden");$("mprint").onclick=()=>window.AndroidBridge?AndroidBridge.print():window.print();$("mwa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}
+function slip(m,id){const P=m==="p",d=DB[m].find(x=>x.id==id);if(!d)return;
+ const no=(P?"P-":"S-")+String(d.id).slice(-6),du=due(d),shop=DB.shop||"Shop Manager",tm=new Date(d.id).toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit"}),bal=!P&&d.party?owes(d.party):0;
+ const title=P?"PURCHASE SLIP":"SALE RECEIPT / رسید";
+ const txt=[shop,DB.addr||"",DB.phone?"Ph: "+DB.phone:"","-----------",title,"No: "+no,"Date: "+d.date+" "+tm,(P?"Supplier: ":"Customer: ")+(d.party||"-"),"-----------",d.en+" ("+d.ur+")",d.q+" "+d.u+" x "+rs(d.pr),"TOTAL: "+rs(tot(d)),(P?"Paid: ":"Received: ")+rs(d.paid)+" ("+d.mth+")",du>0?"PENDING (Udhaar): "+rs(du):"Status: PAID IN FULL",bal>0?"Total udhaar of "+d.party+": "+rs(bal):"","-----------","Shukriya / شکریہ"].filter(x=>x!=="").join("\n");
+ $("mbox").innerHTML=`<div class="slip" id="slipbox">${slipHead(shop,title)}<hr>
+ <div class="l"><span>No: ${no}</span><span>${d.date} ${tm}</span></div>
+ <div class="l"><span>${P?"Supplier":"Customer"}:</span><b>${esc(d.party||"-")}</b></div><hr>
+ <div class="l"><b>Item</b><b>Amount</b></div>
+ <div class="l"><span>${esc(d.en)} <span class="ur">${esc(d.ur)}</span></span><span>${rs(tot(d))}</span></div>
+ <div class="l"><small>${d.q} ${d.u} x ${rs(d.pr)}</small><span></span></div><hr>
+ <div class="l"><b>TOTAL</b><b>${rs(tot(d))}</b></div>
+ <div class="l"><span>${P?"Paid":"Received"} (${esc(d.mth)})</span><span>${rs(d.paid)}</span></div>
+ <div class="l"><b>${du>0?"PENDING (Udhaar)":"Balance"}</b><b>${rs(du)}</b></div>
+ <div class="stamp">${P?"PURCHASE":du>0?"UDHAAR / اُدھار":"PAID / ادا شدہ"}</div>
+ ${bal>0?`<div class="l"><b>Total udhaar of ${esc(d.party)}</b><b>${rs(bal)}</b></div>`:""}
+ ${d.note?`<div>Note: ${esc(d.note)}</div>`:""}
+ <div class="sig"><span>${P?"Supplier":"Customer"} sign</span><span>Shop sign</span></div>
+ <hr><div class="c">Shukriya / شکریہ<br>Visit again</div></div>`;
+ slipActions(txt)}
+function paySlip(id){const d=DB.pay.find(x=>x.id==id);if(!d)return;const shop=DB.shop||"Shop Manager",no="R-"+String(d.id).slice(-6),tm=new Date(d.id).toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit"}),bal=owes(d.party);
+ const txt=[shop,DB.phone?"Ph: "+DB.phone:"","PAYMENT RECEIPT","No: "+no,"Date: "+d.date+" "+tm,"Customer: "+d.party,"Received: "+rs(d.amt),"Remaining udhaar: "+rs(bal),"Shukriya / شکریہ"].filter(x=>x!=="").join("\n");
+ $("mbox").innerHTML=`<div class="slip" id="slipbox">${slipHead(shop,"PAYMENT RECEIPT / رقم وصول")}<hr>
+ <div class="l"><span>No: ${no}</span><span>${d.date} ${tm}</span></div>
+ <div class="l"><span>Customer:</span><b>${esc(d.party)}</b></div><hr>
+ <div class="l"><b>Amount received</b><b>${rs(d.amt)}</b></div>
+ <div class="l"><b>Remaining udhaar</b><b>${rs(bal)}</b></div>
+ <div class="stamp">${bal>0?"PARTIAL PAYMENT":"CLEARED / کلیئر"}</div>
+ <div class="sig"><span>Customer sign</span><span>Shop sign</span></div><hr><div class="c">Shukriya / شکریہ</div></div>`;
+ slipActions(txt)}
+
+/* udhaar khata */
+const norm=s=>(s||"").trim().toLowerCase();
+function parties(){const m={},o=n=>{const k=norm(n);return m[k]||(m[k]={k,name:n.trim(),due:0,last:""})};
+ DB.s.forEach(d=>{if(d.party&&due(d)>0){const x=o(d.party);x.due+=due(d);if(d.date>x.last)x.last=d.date}});
+ DB.ud.forEach(d=>{const r=d.amt-d.paid;if(r>0){const x=o(d.party);x.due+=r;if(d.date>x.last)x.last=d.date}});
+ return Object.values(m).sort((a,b)=>b.due-a.due)}
+const owes=n=>{const p=parties().find(x=>x.k===norm(n));return p?p.due:0};
+function receive(name,amt){let left=amt;const k=norm(name);
+ [...DB.s.filter(d=>norm(d.party)===k&&due(d)>0).map(r=>({r,s:1})),...DB.ud.filter(d=>norm(d.party)===k&&d.amt-d.paid>0).map(r=>({r,s:0}))].sort((a,b)=>a.r.date.localeCompare(b.r.date)||a.r.id-b.r.id)
+ .forEach(x=>{if(left<=0)return;const need=x.s?due(x.r):x.r.amt-x.r.paid,t=Math.min(need,left);x.r.paid+=t;left-=t});
+ const used=amt-left;if(used<=0)return null;const rec={id:Date.now(),date:dstr(0),party:name,amt:used};DB.pay.unshift(rec);saveDB();return rec}
+function drawUd(){const all=parties(),q=$("udq").value.toLowerCase(),L=all.filter(x=>!q||x.name.toLowerCase().includes(q));
+ $("udsum").innerHTML=`<span>${all.length} customers</span><span class="pnc">Total udhaar <b>${rs(all.reduce((a,x)=>a+x.due,0))}</b></span>`;
+ $("udrows").innerHTML=L.map(x=>`<tr class="clk" data-k="${esc(x.k)}"><td><b>${esc(x.name)}</b></td><td>${x.last}</td><td style="text-align:end"><b class="mi">${rs(x.due)}</b></td></tr>`).join("");
+ $("udempty").classList.toggle("hidden",L.length>0);
+ $("pl").innerHTML=[...new Set([...DB.s,...DB.ud].map(d=>d.party).filter(Boolean))].map(n=>`<option value="${esc(n)}">`).join("")}
+function udDetail(k){const p=parties().find(x=>x.k===k);if(!p){closeM();return}
+ const sl=DB.s.filter(d=>norm(d.party)===k&&due(d)>0),ul=DB.ud.filter(d=>norm(d.party)===k&&d.amt-d.paid>0),pays=DB.pay.filter(d=>norm(d.party)===k).slice(0,6);
+ $("mbox").innerHTML=`<h3>👤 ${esc(p.name)}</h3><small>Total udhaar</small><div class="mgrid" style="grid-template-columns:1fr"><div><b class="mi">${rs(p.due)}</b></div></div>
+ <h3 style="font-size:16px">Pending</h3><div class="tw"><table><tbody>${sl.map(d=>`<tr><td>${d.date}</td><td>${esc(d.en)} · ${d.q} ${d.u}</td><td><b class="mi">${rs(due(d))}</b></td><td><button class="mini" type="button" data-sl="s:${d.id}">Receipt</button></td></tr>`).join("")}${ul.map(d=>`<tr><td>${d.date}</td><td>${esc(d.note||"Udhaar")}</td><td><b class="mi">${rs(d.amt-d.paid)}</b></td><td></td></tr>`).join("")}</tbody></table></div>
+ ${pays.length?`<h3 style="font-size:16px">Payments received</h3><div class="tw"><table><tbody>${pays.map(d=>`<tr><td>${d.date}</td><td><b class="pl">${rs(d.amt)}</b></td><td><button class="mini" type="button" data-sl="pay:${d.id}">Receipt</button></td></tr>`).join("")}</tbody></table></div>`:""}
+ <label for="rcv">Receive payment (Rs) / رقم وصول</label><input id="rcv" type="number" min="0" step="any" value="${Math.round(p.due)}"><div class="err" id="rerr" role="alert"></div>
+ <div class="mact"><button class="btn main" id="rbtn" type="button">💰 Receive</button><button class="btn g" id="rwa" type="button">WhatsApp reminder</button><button class="btn g" id="mclose" type="button">Close</button></div>`;
+ $("modal").classList.remove("hidden");
+ $("rbtn").onclick=()=>{const a=+$("rcv").value,er=$("rerr");if(!(a>0)){er.textContent="Enter the amount.";return}if(a>p.due+1e-9){er.textContent="More than the udhaar ("+rs(p.due)+").";return}
+  const rec=receive(p.name,a);if(rec){drawUd();toast("Payment received ✓");paySlip(rec.id)}};
+ $("rwa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent("Assalam o Alaikum "+p.name+", "+(DB.shop||"Shop")+" mein aapka "+rs(p.due)+" udhaar baqi hai. Meherbani karke ada kar dein. Shukriya.")+"","_blank")}
+$("udq").oninput=drawUd;$("udrows").onclick=e=>{const r=e.target.closest("tr");if(r&&r.dataset.k)udDetail(r.dataset.k)};
+$("ud_save").onclick=()=>{const n=$("ud_n").value.trim(),a=+$("ud_a").value,er=$("ud_err");
+ if(!n){er.textContent="Enter the customer name.";return}if(!(a>0)){er.textContent="Enter the amount.";return}
+ DB.ud.unshift({id:Date.now(),date:$("ud_d").value||dstr(0),party:n,amt:a,paid:0,note:$("ud_note").value.trim()});saveDB();er.textContent="";["ud_n","ud_a","ud_note"].forEach(i=>$(i).value="");drawUd();toast("Udhaar saved ✓")};
+$("stcsv").onclick=()=>csv("stock",[["Category","Item","Unit","Bought","Sold","In stock","Avg cost","Stock value"]].concat(stockList().map(x=>[cn(x.cat).en,x.en,x.u,x.pq,x.sq,x.left,x.avg.toFixed(2),x.val.toFixed(2)])));
+function saveBlob(name,blob,mime){
+ if(window.AndroidBridge){const fr=new FileReader();fr.onload=()=>AndroidBridge.saveFile(name,mime,String(fr.result).split(",")[1]);fr.readAsDataURL(blob);return}
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click()}
+function csv(n,r){const t="\ufeff"+r.map(x=>x.map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"').join(",")).join("\n");saveBlob("shop-manager-"+n+".csv",new Blob([t],{type:"text/csv"}),"text/csv")}
+
+/* dashboard */
+function cnt(el,to){let t0=null;const f=t=>{if(!t0)t0=t;const p=Math.min((t-t0)/900,1);el.textContent=rs(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function cntN(el,to){el.textContent=to}
+$("per").onchange=dash;
+["c4","c7"].forEach(i=>{const e=$(i).parentElement;e.classList.add("clk");e.onclick=()=>go("stock")});
+$("c5").parentElement.classList.add("clk");$("c5").parentElement.onclick=()=>go("ud");
+$("c6").parentElement.classList.add("clk");$("c6").parentElement.onclick=()=>{go("p");$("p_pend").value="pending";draw("p");openAcc("p_rows")};
+function dash(){const per=$("per").value,td=dstr(0);
+ const inP=d=>per==="all"||(per==="today"?d===td:per==="7"?d>=dstr(-6)&&d<=td:d.slice(0,7)===td.slice(0,7));
+ const stt=stock(),P=DB.p.filter(d=>inP(d.date)),Sa=DB.s.filter(d=>inP(d.date));
+ const sum=(a,f)=>a.reduce((s,d)=>s+f(d),0);
+ const vals=Object.values(stt),low=vals.filter(x=>x.left<=DB.low&&x.pq>0);
+ $("hello").textContent=`Hello ${U.name}. ${DB.p.length} purchases and ${DB.s.length} sales recorded.`;
+ cnt($("c1"),sum(P,tot));cnt($("c2"),sum(Sa,tot));cnt($("c3"),sum(Sa,d=>profitOf(d,stt)));cnt($("c4"),sum(vals,x=>x.val));
+ cnt($("c5"),parties().reduce((a,x)=>a+x.due,0));cnt($("c6"),sum(DB.p,due));cntN($("c7"),low.length);cntN($("c8"),P.length+Sa.length);
+ const days=[6,5,4,3,2,1,0].map(o=>{const ds=dstr(-o),w=new Date(ds+"T00:00").toLocaleDateString("en",{weekday:"short"});return{w,p:sum(DB.p.filter(d=>d.date===ds),tot),s:sum(DB.s.filter(d=>d.date===ds),tot)}});
+ const mx=Math.max(1,...days.map(d=>Math.max(d.p,d.s)));
+ $("chart").innerHTML=days.map(d=>`<div class="col" title="${d.w}: bought ${rs(d.p)}, sold ${rs(d.s)}"><div class="pair"><i style="background:var(--blue)" data-h="${d.p/mx*100}"></i><i style="background:var(--gold)" data-h="${d.s/mx*100}"></i></div><small>${d.w}</small></div>`).join("");
+ setTimeout(()=>document.querySelectorAll("#chart i").forEach(i=>i.style.height=i.dataset.h+"%"),60);
+ const mix=[...DB.p.map(d=>({...d,t:"p"})),...DB.s.map(d=>({...d,t:"s"}))].sort((a,b)=>b.id-a.id).slice(0,8);
+ $("recent").innerHTML=mix.map(d=>`<div class="rec"><div><span class="dot" style="background:var(--${d.t==="p"?"blue":"gold"})"></span><b>${esc(d.en)}</b><span class="ur">${esc(d.ur)}</span></div><div style="text-align:end">${d.q} ${d.u}<br><small>${d.t==="p"?"Bought":"Sold"} ${rs(tot(d))}</small></div></div>`).join("")||'<div class="empty">No activity yet. Add a purchase to begin.</div>';
+ const tp=Object.values(Sa.reduce((m,d)=>{const x=m[keyOf(d)]||(m[keyOf(d)]={en:d.en,ur:d.ur,u:d.u,q:0,r:0});x.q+=d.q;x.r+=tot(d);return m},{})).sort((a,b)=>b.r-a.r).slice(0,5),tm=Math.max(1,...tp.map(x=>x.r));
+ $("top").innerHTML=tp.map(x=>`<div class="rec" style="display:block"><div style="display:flex;justify-content:space-between"><span><b>${esc(x.en)}</b> <small>${+x.q.toFixed(2)} ${x.u}</small></span><b>${rs(x.r)}</b></div><div style="height:8px;background:var(--chip);border-radius:9px;margin-top:5px"><div class="fillb" data-w="${x.r/tm*100}" style="height:100%;width:0;background:var(--gold);border-radius:9px;transition:width 1s"></div></div></div>`).join("")||'<div class="empty">No sales in this period.</div>';
+ setTimeout(()=>document.querySelectorAll(".fillb").forEach(f=>f.style.width=f.dataset.w+"%"),60);
+ $("lowl").innerHTML=low.sort((a,b)=>a.left-b.left).slice(0,6).map(x=>`<div class="rec"><div><b>${esc(x.en)}</b><span class="ur">${esc(x.ur)}</span></div><div style="text-align:end"><span class="tag low">${x.left<=0?"out":"low"}</span><br><small>${+x.left.toFixed(2)} ${x.u} left</small></div></div>`).join("")||'<div class="empty">All stock levels are fine.</div>'}
+
+/* settings */
+$("ssave").onclick=()=>{DB.shop=$("sn").value.trim()||"Shop Manager";DB.phone=$("sph").value.trim();DB.addr=$("sad").value.trim();DB.low=Math.max(0,+$("lw").value||0);DB.margin=Math.max(0,+$("mg").value||0);saveDB();shopName();$("sok").textContent="Saved ✓";setTimeout(()=>$("sok").textContent="",2000)};
+$("pbtn").onclick=async()=>{const e=U.email,o=$("op").value,n=$("np").value,pe=$("perr");pe.className="err";
+ if(await hp(e,o)!==USERS[e].hash){pe.textContent="Current password is wrong.";return}
+ if(n.length<6){pe.textContent="New password must be at least 6 characters.";return}
+ if(n!==$("np2").value){pe.textContent="New passwords do not match.";return}
+ if(n===o){pe.textContent="New password must be different.";return}
+ USERS[e].hash=await hp(e,n);sv("sm_users",USERS);["op","np","np2"].forEach(i=>$(i).value="");pe.className="ok";pe.textContent="Password updated ✓"};
+$("bk").onclick=()=>saveBlob("shop-manager-backup.json",new Blob([JSON.stringify(DB)],{type:"application/json"}),"application/json");
+$("rs").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!Array.isArray(o.p)||!Array.isArray(o.s))throw 0;DB={p:o.p,s:o.s,shop:o.shop||"Shop Manager",low:o.low==null?5:o.low,margin:o.margin==null?10:o.margin,ud:o.ud||[],pay:o.pay||[],phone:o.phone||"",addr:o.addr||""};saveDB();shopName();["p","s"].forEach(draw);toast("Backup restored ✓");$("derr").textContent=""}catch(x){$("derr").textContent="This file is not a valid backup."}};r.readAsText(f)};
+let armed=false;$("clr").onclick=()=>{if(!armed){armed=true;$("clr").textContent="Click again to delete everything";setTimeout(()=>{armed=false;$("clr").textContent="Delete all my data"},4000);return}
+ DB.p=[];DB.s=[];DB.ud=[];DB.pay=[];saveDB();armed=false;$("clr").textContent="Delete all my data";["p","s"].forEach(draw);toast("All data deleted")};
+
+function openAcc(id){const c=$(id).closest(".card");if(c){c.classList.add("open");c.querySelector(":scope>h3").setAttribute("aria-expanded","true");setTimeout(()=>c.scrollIntoView({behavior:"smooth",block:"start"}),50)}}
+function makeAcc(root){root.querySelectorAll(".card").forEach(c=>{const h=c.querySelector(":scope>h3");if(!h)return;c.classList.add("acc");h.tabIndex=0;h.setAttribute("role","button");h.setAttribute("aria-expanded","false");
+ const t=()=>h.setAttribute("aria-expanded",c.classList.toggle("open"));h.onclick=t;h.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}}})}
+makeAcc($("v-set"));makeAcc($("v-ud"));$("udcard").classList.add("open");
+$("out2").onclick=()=>$("out").click();
+$("qp").onclick=()=>{go("p");openAcc("p_cats")};
+$("qs").onclick=()=>{go("s");openAcc("s_cats")};
+$("qk").onclick=()=>go("stock");$("qu").onclick=()=>go("ud");
+$("pwt").onclick=()=>{const p=$("pw"),s=p.type==="password";p.type=s?"text":"password";$("pwt").textContent=s?"Hide":"Show"};
+["em","pw","pw2","cp","ge","gn","nm"].forEach(i=>{const e=$(i);if(e)e.addEventListener("keydown",k=>{if(k.key==="Enter")$("lbtn").click()})});
+const ses=ld("sm_session",null);if(ses&&USERS[ses])enter(ses);
+</script>
+</body>
+</html>
